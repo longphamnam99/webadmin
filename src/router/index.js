@@ -95,13 +95,13 @@ export const constantRoutes = [
       {
         path: 'category',
         component: () => import('@/views/products/category'),
-        name: 'category',
+        name: 'category_product',
         meta: { title: 'Danh mục', icon: 'list' }
       },
       {
         path: 'product',
         component: () => import('@/views/products/product'),
-        name: 'product',
+        name: 'product_post',
         meta: { title: 'Sản phẩm', icon: 'shopping' }
       },
       {
@@ -109,6 +109,29 @@ export const constantRoutes = [
         component: () => import('@/views/products/banner'),
         name: 'Banner',
         meta: { title: 'Banner', icon: 'el-icon-picture' }
+      }
+    ]
+  },
+  {
+    path: '/news',
+    component: Layout,
+    name: 'news',
+    meta: {
+      title: 'Tin tức',
+      icon: 'documentation'
+    },
+    children: [
+      {
+        path: 'category',
+        component: () => import('@/views/news/category'),
+        name: 'news_category',
+        meta: { title: 'Danh mục', icon: 'list' }
+      },
+      {
+        path: 'product',
+        component: () => import('@/views/news/post'),
+        name: 'news_post',
+        meta: { title: 'Bài đăng', icon: 'el-icon-copy-document' }
       }
     ]
   },

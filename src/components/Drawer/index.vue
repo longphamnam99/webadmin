@@ -5,8 +5,13 @@
       :visible.sync="drawer"
       :direction="direction"
       :before-close="handleClose"
+      :append-to-body="false"
     >
-      <slot />
+      <el-card class="box-card">
+        <div class="text item">
+          <slot />
+        </div>
+      </el-card>
     </el-drawer>
   </div>
 </template>
@@ -33,6 +38,15 @@ export default {
       drawer: this.visible
     }
   },
+
+  watch: {
+    drawer() {
+      this.$emit('update:visible', this.drawer)
+    },
+    visible() {
+      this.drawer = this.visible
+    }
+  },
   methods: {
     handleClose(done) {
       this.$confirm('Bạn có chắc sẽ đóng tác vụ hiện tại?')
@@ -44,3 +58,8 @@ export default {
   }
 }
 </script>
+<style>
+.el-drawer__body {
+  overflow: auto !important;
+}
+</style>

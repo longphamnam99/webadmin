@@ -3,7 +3,9 @@
     <div class="filter-container">
       <el-row>
         <div class="text-right">
-          <el-button icon="el-icon-refresh-left" @click="getList"> Tải lại </el-button>
+          <el-button icon="el-icon-refresh-left" @click="getList">
+            Tải lại
+          </el-button>
           <el-button
             icon="el-icon-circle-plus"
             type="success"
@@ -14,85 +16,110 @@
         </div>
       </el-row>
     </div>
-    <List :table-data="tableData" :loading="loading" />
+    <List
+      :table-data="tableData"
+      :loading="loading"
+      @show-edit="showEdit"
+      @delete-item="deleteItem"
+      :query="query"
+    />
+    <pagination
+      :loading="loading"
+      :total="total"
+      :page.sync="query.page"
+      :limit.sync="query.limit"
+      @pagination="getList"
+    />
     <drawer title="Thêm danh mục bài viết" :visible.sync="showFormAdd">
-      <Add />
+      <Add @add-done="addDone" />
+    </drawer>
+    <drawer title="Sửa danh mục bài viết" :visible.sync="showFormEdit">
+      <Edit :form-data="editRow" @edit-done="editDone" />
     </drawer>
   </div>
 </template>
 
 <script>
-import Add from './add'
-import List from './list'
-import Drawer from '@/components/Drawer'
+import Add from "./add";
+import Edit from "./edit";
+import List from "./list";
+import Drawer from "@/components/Drawer";
+import newsServices from "@/api/news";
+import Pagination from "@/components/Pagination";
 
 export default {
   components: {
     Add,
+    Edit,
     List,
-    Drawer
+    Pagination,
+    Drawer,
   },
   data() {
     return {
       loading: true,
       showFormAdd: false,
-      tableData: []
-    }
+      showFormEdit: false,
+      editRow: {},
+      tableData: [],
+      query: {
+        page: 1,
+        limit: 20,
+      },
+      total: 0,
+    };
   },
   created() {
-    this.getList()
+    this.getList();
   },
   methods: {
     getList() {
-      this.loading = true
-      this.tableData = [
-        {
-          id: 1,
-          title: 'Báo chí nói về DTSOFT',
-          create_at: '1424863280838',
-          image: '',
-          abbreviate: 'abc',
-          status: 0,
-          seo_title: 'seo title',
-          seo_description: 'seo description',
-          seo_keyword: 'seo keyword'
-        },
-        {
-          id: 2,
-          title: 'Tin tuyển dụng',
-          create_at: '1424863280838',
-          image: '',
-          abbreviate: 'abc',
-          status: 1,
-          seo_title: 'seo title',
-          seo_description: 'seo description',
-          seo_keyword: 'seo keyword'
-        },
-        {
-          id: 3,
-          title: 'Tin công nghệ',
-          create_at: '1424863280838',
-          image: '',
-          abbreviate: 'abc',
-          status: 1,
-          seo_title: 'seo title',
-          seo_description: 'seo description',
-          seo_keyword: 'seo keyword'
-        },
-        {
-          id: 3,
-          title: 'Tin công ty',
-          create_at: '1424863280838',
-          image: '',
-          abbreviate: 'abc',
-          status: 1,
-          seo_title: 'seo title',
-          seo_description: 'seo description',
-          seo_keyword: 'seo keyword'
+      this.loading = true;
+      newsServices.getNewsCategory(this.query).then((response) => {
+        if (response.code != 200) {
+          return this.$notify({
+            title: "Lỗi!",
+            message: response.message,
+            type: "error",
+          });
         }
-      ]
-      this.loading = false
-    }
-  }
-}
+        this.total = response.data.total;
+        this.tableData = response.data.items;
+      });
+      this.loading = false;
+    },
+    addDone() {
+      this.showFormAdd = false;
+      this.query.page = 1;
+      this.getList();
+    },
+    editDone() {
+      this.showFormEdit = false;
+      this.getList();
+    },
+    showEdit(data) {
+      this.editRow = data.row;
+      this.showFormEdit = true;
+    },
+    deleteItem(data) {
+      newsServices
+        .deleteNewsCategory(data.row.id)
+        .then((res) => {
+          this.getList();
+          this.$notify({
+            title: "Thành công!",
+            message: res.message,
+            type: "success",
+          });
+        })
+        .catch((res) => {
+          this.$notify({
+            title: "Lỗi!",
+            message: res.message,
+            type: "error",
+          });
+        });
+    },
+  },
+};
 </script>

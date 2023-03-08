@@ -1,13 +1,36 @@
-import request from '@/utils/request'
-import { auth } from '@/helpers/auth.js'
+import request from "@/utils/request";
+import { auth } from "@/helpers/auth.js";
 
 export default {
-  addNew(data) {
+  addNewsCategory(data) {
     return request({
-      url: '/news/add',
-      method: 'post',
+      url: "/news/add_category",
+      method: "post",
       headers: auth(),
-      data
-    })
-  }
-}
+      data,
+    });
+  },
+  getNewsCategory(query) {
+    return request({
+      url: "/news/list_category",
+      method: "get",
+      headers: auth(),
+      params: query,
+    });
+  },
+  editNewsCategory(id, data) {
+    return request({
+      url: "/news/edit_category/" + id,
+      method: "put",
+      headers: auth(),
+      data,
+    });
+  },
+  deleteNewsCategory(id) {
+    return request({
+      url: "/news/delete_category/" + id,
+      method: "delete",
+      headers: auth(),
+    });
+  },
+};

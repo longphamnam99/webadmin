@@ -10,15 +10,15 @@
     >
       <el-table-column align="center" label="STT" width="80">
         <template slot-scope="scope">
-          <span>{{ scope.row.id }}</span>
+          <span>{{ (scope.$index + 1) + (query.page - 1) * query.limit }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Tiêu đề" width="350">
+      <el-table-column label="Tiêu đề">
         <template slot-scope="{ row }">
           <span>{{ row.title }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Mô tả">
+      <!-- <el-table-column label="Mô tả">
         <template slot-scope="{ row }">
           <span>{{ row.abbreviate }}</span>
         </template>
@@ -29,8 +29,8 @@
         header-align="center"
         align="center"
       >
-        <img src="/images/no-image-thumb.jpg" alt="image" width="50">
-      </el-table-column>
+        <img src="/images/no-image-thumb.jpg" alt="image" width="50" />
+      </el-table-column> -->
       <el-table-column label="Ngày tạo" width="140px">
         <template slot-scope="scope">
           <span>{{ scope.row.create_at | parseTime("{d}-{m}-{y}") }}</span>
@@ -64,6 +64,7 @@
               type="primary"
               icon="el-icon-edit"
               size="mini"
+              @click="handleEdit(scope.$index, scope.row)"
             />
           </el-tooltip>
           <el-tooltip content="Xoá" placement="bottom" effect="light">
@@ -84,51 +85,49 @@
 export default {
   filters: {
     statusFilter(status) {
-      const statusMap = ['danger', 'success']
-      return statusMap[status]
+      const statusMap = ["danger", "success"];
+      return statusMap[status];
     },
     statusName(status) {
-      const statusMap = ['Bị ẩn', 'Hiển thị']
-      return statusMap[status]
-    }
+      const statusMap = ["Bị ẩn", "Hiển thị"];
+      return statusMap[status];
+    },
   },
   props: {
     loading: {
       type: Boolean,
-      default: false
+      default: false,
     },
     tableData: {
       type: Array,
-      default: [{}]
+      default: [{}],
+    },
+    query: {
+      type: Object,
+      default: () => { return {}}
     }
   },
   methods: {
     handleDetail(index, row) {},
     handleDelete(index, row) {
-      this.$confirm('Thao tác này sẽ xóa vĩnh viễn dữ liệu. Tiếp tục?', 'Cảnh báo', {
-        confirmButtonText: 'OK',
-        cancelButtonText: 'Quay lại',
-        type: 'warning'
-      })
-        .then((_) => {
-          done()
-        })
-    //   this.$confirm(
-    //     this.$tc("common.confirmDelete"),
-    //     this.$t("common.warning"),
-    //     {
-    //       confirmButtonText: this.$t("common.confirm"),
-    //       cancelButtonText: this.$t("common.cancel"),
-    //       type: "warning",
-    //       customClass: "custom-confirm-warning",
-    //     }
-    //   ).then(() => {
-    //     this.$emit("on-delete", {
-    //       i,
-    //       it,
-    //     });
-    //   });
-    }
-  }
-}
+      this.$confirm(
+        "Thao tác này sẽ xóa vĩnh viễn dữ liệu. Tiếp tục?",
+        "Cảnh báo",
+        {
+          confirmButtonText: "OK",
+          cancelButtonText: "Quay lại",
+          type: "warning",
+        }
+      ).then((_) => {
+        this.$emit("delete-item", {
+          index: index,
+          row: row,
+        });
+      });
+    },
+    handleEdit(index, row) {
+      this.$emit("show-edit", { index, row });
+    },
+  },
+};
 </script>

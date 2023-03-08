@@ -131,7 +131,7 @@ export const constantRoutes = [
         path: 'product',
         component: () => import('@/views/news/post'),
         name: 'news_post',
-        meta: { title: 'Bài đăng', icon: 'el-icon-copy-document' }
+        meta: { title: 'Bài viết', icon: 'el-icon-copy-document' }
       }
     ]
   },

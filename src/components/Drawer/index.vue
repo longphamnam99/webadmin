@@ -6,6 +6,7 @@
       :direction="direction"
       :before-close="handleClose"
       :append-to-body="false"
+      :size="size"
     >
       <el-card class="box-card">
         <div class="text item">
@@ -30,6 +31,10 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    size: {
+      type: String,
+      default: "30%"
     }
   },
   data() {

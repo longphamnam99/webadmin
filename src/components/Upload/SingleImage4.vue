@@ -26,7 +26,7 @@ export default {
   methods: {
     submitUpload() {
       this.$refs.upload.submit()
-    },
+    }
   }
 }
 </script>

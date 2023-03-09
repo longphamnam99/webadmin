@@ -34,7 +34,7 @@ export default {
     },
     size: {
       type: String,
-      default: "30%"
+      default: '30%'
     }
   },
   data() {

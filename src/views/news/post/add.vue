@@ -1,31 +1,32 @@
 <template>
   <div>
-    <el-form :inline="true" ref="form" :model="form" :rules="formRules">
-      <div class="row">
-        <el-form-item label="Danh mục" prop="category">
-          <el-select
-            v-model="form.category_id"
-            :loading="loading"
-            placeholder="Chọn"
-          >
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="Ảnh">
-          <SingleImageUpload v-model="form.image" />
-        </el-form-item>
-      </div>
-      <el-form-item label="Tiêu đề" prop="title" width="100%">
-        <el-input v-model="form.title" />
+    <el-form ref="form" :model="form" :rules="formRules">
+      <el-form-item label="Danh mục" prop="category_id">
+        <el-select
+          v-model="form.category_id"
+          :loading="loading"
+          placeholder="Chọn"
+        >
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="Ảnh" prop="image">
+        <SingleImageUpload v-model="form.image" />
+      </el-form-item>
+      <el-form-item label="Thuộc tính">
+        <el-checkbox v-model="form.pin">Ghim</el-checkbox>
+        <el-checkbox v-model="form.new">Tin mới</el-checkbox>
+      </el-form-item>
+      <el-form-item label="Tiêu đề" prop="name" width="100%">
+        <el-input v-model="form.name" />
       </el-form-item>
       <el-form-item label="Tóm tắt">
-        <el-input v-model="form.desc" type="textarea" />
+        <el-input v-model="form.introduce" type="textarea" />
       </el-form-item>
       <el-form-item label="Mô tả" prop="content">
         <br />
@@ -56,27 +57,33 @@ export default {
       loading: false,
       form: {
         category_id: "",
-        title: "",
-        desc: "",
+        name: "",
+        introduce: "",
         image: "",
-        icon: "",
         seo_title: "",
         seo_key: "",
         seo_desc: "",
         status: true,
-        content: `<h1 style="text-align: center;">Welcome to the TinyMCE demo!</h1><p style="text-align: center; font-size: 15px;"><img title="TinyMCE Logo" src="//www.tinymce.com/images/glyph-tinymce@2x.png" alt="TinyMCE Logo" width="110" height="97" /><ul>
-        <li>Our <a href="//www.tinymce.com/docs/">documentation</a> is a great resource for learning how to configure TinyMCE.</li><li>Have a specific question? Visit the <a href="https://community.tinymce.com/forum/">Community Forum</a>.</li><li>We also offer enterprise grade support as part of <a href="https://tinymce.com/pricing">TinyMCE premium subscriptions</a>.</li>
-      </ul>`,
+        pin: false,
+        new: false,
+        content: "",
       },
       formRules: {
-        category: [
+        category_id: [
           {
             required: true,
             message: "Vui lòng chọn danh mục",
             trigger: "change",
           },
         ],
-        title: [
+        // image: [
+        //   {
+        //     required: true,
+        //     message: 'Vui lòng chọn ảnh',
+        //     trigger: 'change'
+        //   }
+        // ],
+        name: [
           {
             required: true,
             message: "Vui lòng điền tiêu đề",
@@ -92,10 +99,6 @@ export default {
         ],
       },
       options: [],
-      formInline: {
-        user: "",
-        region: "",
-      },
     };
   },
   created() {
@@ -105,7 +108,7 @@ export default {
     loadCategories() {
       this.loading = true;
       newsServices.getNewsCategory(this.query).then((response) => {
-        if (response.code != 200) {
+        if (response.code !== 200) {
           return this.$notify({
             title: "Lỗi!",
             message: response.message,
@@ -123,29 +126,28 @@ export default {
     },
     onSubmit() {
       if (this.loading) return;
-      console.log(this.form.category_id);
       this.$refs["form"].validate((valid) => {
         if (valid) {
-          // this.loading = true;
-          // const data = Object.assign({}, this.form);
-          // newsServices.addNewsCategory(data).then((response) => {
-          //   if (response.code != 200) {
-          //     return this.$notify({
-          //       title: "Lỗi!",
-          //       message: response.message,
-          //       type: "error",
-          //     });
-          //   }
-          //   this.$refs["form"].clearValidate();
-          //   this.$refs["form"].resetFields();
-          //   this.$emit("add-done");
-          //   return this.$notify({
-          //     title: "Thành công!",
-          //     message: response.message,
-          //     type: "success",
-          //   });
-          // });
-          // this.loading = false;
+          this.loading = true;
+          const data = Object.assign({}, this.form);
+          newsServices.addNewsPost(data).then((response) => {
+            if (response.code != 200) {
+              return this.$notify({
+                title: "Lỗi!",
+                message: response.message,
+                type: "error",
+              });
+            }
+            this.$refs["form"].clearValidate();
+            this.$refs["form"].resetFields();
+            this.$emit("add-done");
+            return this.$notify({
+              title: "Thành công!",
+              message: response.message,
+              type: "success",
+            });
+          });
+          this.loading = false;
         }
       });
     },

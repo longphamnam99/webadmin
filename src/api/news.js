@@ -33,4 +33,35 @@ export default {
       headers: auth(),
     });
   },
+  getNewsPost(query) {
+    return request({
+      url: "/news/list_post",
+      method: "get",
+      headers: auth(),
+      params: query,
+    });
+  },
+  addNewsPost(data) {
+    return request({
+      url: "/news/add_post",
+      method: "post",
+      headers: auth(),
+      data,
+    });
+  },
+  editNewsPost(id, data) {
+    return request({
+      url: "/news/edit_post/" + id,
+      method: "put",
+      headers: auth(),
+      data,
+    });
+  },
+  deleteNewsPost(id) {
+    return request({
+      url: "/news/delete_post/" + id,
+      method: "delete",
+      headers: auth(),
+    });
+  },
 };

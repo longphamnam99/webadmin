@@ -1,19 +1,15 @@
 <template>
   <div>
     <el-form ref="form" :model="form" :rules="formRules">
-      <el-form-item label="Tiêu đề" prop="title">
-        <el-input v-model="form.title" />
+      <el-form-item label="Tên" prop="name">
+        <el-input v-model="form.name" />
       </el-form-item>
-      <el-form-item label="Mô tả">
-        <el-input v-model="form.desc" type="textarea" />
+      <el-form-item label="Mã">
+        <el-input v-model="form.code" />
       </el-form-item>
       <el-form-item label="Ảnh">
-        <SingleImageUpload v-model="form.image" />
+        <SingleImageUpload v-model="form.photo" />
       </el-form-item>
-      <el-form-item label="Icon">
-        <el-input v-model="form.icon" />
-      </el-form-item>
-
       <el-form-item label="SEO Title">
         <el-input v-model="form.seo_title" />
       </el-form-item>
@@ -40,7 +36,7 @@
 
 <script>
 import SingleImageUpload from '@/components/Upload/SingleImage4'
-import newsServices from '@/api/news'
+import productServices from '@/api/product'
 
 export default {
   components: {
@@ -50,20 +46,19 @@ export default {
     return {
       loading: false,
       form: {
-        title: '',
-        desc: '',
-        image: '',
-        icon: '',
+        name: '',
+        code: '',
+        photo: '',
         seo_title: '',
         seo_key: '',
         seo_desc: '',
         status: true
       },
       formRules: {
-        title: [
+        name: [
           {
             required: true,
-            message: 'Vui lòng điền tiêu đề',
+            message: 'Vui lòng điền tên danh mục',
             trigger: 'change'
           }
         ]
@@ -78,7 +73,7 @@ export default {
         if (valid) {
           this.loading = true
           const data = Object.assign({}, this.form)
-          newsServices.addNewsCategory(data).then((response) => {
+          productServices.addProductCategory(data).then((response) => {
             if (response.code !== 200) {
               return this.$notify({
                 title: 'Lỗi!',

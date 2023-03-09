@@ -128,7 +128,7 @@ export const constantRoutes = [
         meta: { title: 'Danh mục', icon: 'list' }
       },
       {
-        path: 'product',
+        path: 'post',
         component: () => import('@/views/news/post'),
         name: 'news_post',
         meta: { title: 'Bài viết', icon: 'el-icon-copy-document' }

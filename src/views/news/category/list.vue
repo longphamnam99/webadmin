@@ -33,7 +33,7 @@
       </el-table-column> -->
       <el-table-column label="Ngày tạo" width="140px">
         <template slot-scope="scope">
-          <span>{{ scope.row.create_at | parseTime("{d}-{m}-{y}") }}</span>
+          <span>{{ scope.row.created_at | parseTime("{d}-{m}-{y}") }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -85,49 +85,49 @@
 export default {
   filters: {
     statusFilter(status) {
-      const statusMap = ["danger", "success"];
-      return statusMap[status];
+      const statusMap = ['danger', 'success']
+      return statusMap[status]
     },
     statusName(status) {
-      const statusMap = ["Bị ẩn", "Hiển thị"];
-      return statusMap[status];
-    },
+      const statusMap = ['Bị ẩn', 'Hiển thị']
+      return statusMap[status]
+    }
   },
   props: {
     loading: {
       type: Boolean,
-      default: false,
+      default: false
     },
     tableData: {
       type: Array,
-      default: [{}],
+      default: [{}]
     },
     query: {
       type: Object,
-      default: () => { return {}}
+      default: () => { return {} }
     }
   },
   methods: {
     handleDetail(index, row) {},
     handleDelete(index, row) {
       this.$confirm(
-        "Thao tác này sẽ xóa vĩnh viễn dữ liệu. Tiếp tục?",
-        "Cảnh báo",
+        'Thao tác này sẽ xóa vĩnh viễn dữ liệu. Tiếp tục?',
+        'Cảnh báo',
         {
-          confirmButtonText: "OK",
-          cancelButtonText: "Quay lại",
-          type: "warning",
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Quay lại',
+          type: 'warning'
         }
       ).then((_) => {
-        this.$emit("delete-item", {
+        this.$emit('delete-item', {
           index: index,
-          row: row,
-        });
-      });
+          row: row
+        })
+      })
     },
     handleEdit(index, row) {
-      this.$emit("show-edit", { index, row });
-    },
-  },
-};
+      this.$emit('show-edit', { index, row })
+    }
+  }
+}
 </script>

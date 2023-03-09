@@ -1,19 +1,15 @@
 <template>
   <div>
     <el-form ref="form" :model="formData" :rules="formRules">
-      <el-form-item label="Tiêu đề" prop="title">
-        <el-input v-model="formData.title" />
+      <el-form-item label="Tên" prop="name">
+        <el-input v-model="formData.name" />
       </el-form-item>
-      <el-form-item label="Mô tả">
-        <el-input v-model="formData.desc" type="textarea" />
+      <el-form-item label="Mã">
+        <el-input v-model="formData.code" />
       </el-form-item>
       <el-form-item label="Ảnh">
-        <SingleImageUpload v-model="formData.image" />
+        <SingleImageUpload v-model="formData.photo" />
       </el-form-item>
-      <el-form-item label="Icon">
-        <el-input v-model="formData.icon" />
-      </el-form-item>
-
       <el-form-item label="SEO Title">
         <el-input v-model="formData.seo_title" />
       </el-form-item>
@@ -24,7 +20,7 @@
         <el-input v-model="formData.seo_desc" type="textarea" />
       </el-form-item>
       <el-form-item label="Trạng thái">
-        <el-switch v-model="formData.status" prop="status" />
+        <el-switch v-model="formData.status" />
       </el-form-item>
       <el-form-item>
         <el-button
@@ -32,14 +28,14 @@
           type="primary"
           @click="onSubmit"
         >Sửa</el-button>
-        <el-button @click="close">Huỷ</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
+
 <script>
 import SingleImageUpload from '@/components/Upload/SingleImage4'
-import newsServices from '@/api/news'
+import productServices from '@/api/product'
 
 export default {
   components: {
@@ -57,10 +53,10 @@ export default {
     return {
       loading: false,
       formRules: {
-        title: [
+        name: [
           {
             required: true,
-            message: 'Vui lòng điền tiêu đề',
+            message: 'Vui lòng điền tên danh mục',
             trigger: 'change'
           }
         ]
@@ -68,9 +64,6 @@ export default {
     }
   },
   methods: {
-    close() {
-      this.$emit('edit-done')
-    },
     onSubmit() {
       if (this.loading) return
 
@@ -78,27 +71,24 @@ export default {
         if (valid) {
           this.loading = true
           const data = Object.assign({}, this.formData)
-          newsServices
-            .editNewsCategory(this.formData.id, data)
-            .then((response) => {
-              if (response.code !== 200) {
-                return this.$notify({
-                  title: 'Lỗi!',
-                  message: response.message,
-                  type: 'error'
-                })
-              }
-              this.$refs['form'].clearValidate()
-              this.$refs['form'].resetFields()
-
-              this.$emit('edit-done')
+          productServices.editProductCategory(this.formData.id, data).then((response) => {
+            if (response.code !== 200) {
               return this.$notify({
-                title: 'Thành công!',
+                title: 'Lỗi!',
                 message: response.message,
-                type: 'success'
+                type: 'error'
               })
-            })
+            }
+            this.$refs['form'].clearValidate()
+            this.$refs['form'].resetFields()
 
+            this.$emit('edit-done')
+            return this.$notify({
+              title: 'Thành công!',
+              message: response.message,
+              type: 'success'
+            })
+          })
           this.loading = false
         }
       })

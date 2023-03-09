@@ -19,9 +19,9 @@
     <List
       :table-data="tableData"
       :loading="loading"
+      :query="query"
       @show-edit="showEdit"
       @delete-item="deleteItem"
-      :query="query"
     />
     <pagination
       :loading="loading"
@@ -33,19 +33,19 @@
     <drawer title="Thêm bài viết" size="70%" :visible.sync="showFormAdd">
       <Add @add-done="addDone" />
     </drawer>
-    <drawer title="Sửa danh mục bài viết" :visible.sync="showFormEdit">
+    <drawer title="Sửa bài viết" size="70%" :visible.sync="showFormEdit">
       <Edit :form-data="editRow" @edit-done="editDone" />
     </drawer>
   </div>
 </template>
 
 <script>
-import Add from "./add";
-import Edit from "./edit";
-import List from "./list";
-import Drawer from "@/components/Drawer";
-import newsServices from "@/api/news";
-import Pagination from "@/components/Pagination";
+import Add from './add'
+import Edit from './edit'
+import List from './list'
+import Drawer from '@/components/Drawer'
+import newsServices from '@/api/news'
+import Pagination from '@/components/Pagination'
 
 export default {
   components: {
@@ -53,7 +53,7 @@ export default {
     Edit,
     List,
     Pagination,
-    Drawer,
+    Drawer
   },
   data() {
     return {
@@ -64,62 +64,62 @@ export default {
       tableData: [],
       query: {
         page: 1,
-        limit: 20,
+        limit: 20
       },
-      total: 0,
-    };
+      total: 0
+    }
   },
   created() {
-    this.getList();
+    this.getList()
   },
   methods: {
     getList() {
-      this.loading = true;
-      newsServices.getNewsCategory(this.query).then((response) => {
-        if (response.code != 200) {
+      this.loading = true
+      newsServices.getNewsPost(this.query).then((response) => {
+        if (response.code !== 200) {
           return this.$notify({
-            title: "Lỗi!",
+            title: 'Lỗi!',
             message: response.message,
-            type: "error",
-          });
+            type: 'error'
+          })
         }
-        this.total = response.data.total;
-        this.tableData = response.data.items;
-      });
-      this.loading = false;
+        this.total = response.data.total
+        this.tableData = response.data.items
+      })
+      this.loading = false
     },
     addDone() {
-      this.showFormAdd = false;
-      this.query.page = 1;
-      this.getList();
+      this.showFormAdd = false
+      this.query.page = 1
+      this.getList()
     },
     editDone() {
-      this.showFormEdit = false;
-      this.getList();
+      this.showFormEdit = false
+      this.getList()
     },
     showEdit(data) {
-      this.editRow = data.row;
-      this.showFormEdit = true;
+      this.editRow = data.row
+      this.showFormEdit = true
     },
     deleteItem(data) {
       newsServices
-        .deleteNewsCategory(data.row.id)
+        .deleteNewsPost(data.row.id)
         .then((res) => {
-          this.getList();
+          this.getList()
           this.$notify({
-            title: "Thành công!",
+            title: 'Thành công!',
             message: res.message,
-            type: "success",
-          });
+            type: 'success'
+          })
         })
         .catch((res) => {
           this.$notify({
-            title: "Lỗi!",
+            title: 'Lỗi!',
             message: res.message,
-            type: "error",
-          });
-        });
-    },
-  },
-};
+            type: 'error'
+          })
+        })
+    }
+  }
+}
 </script>

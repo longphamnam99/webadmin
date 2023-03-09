@@ -33,4 +33,12 @@ export default {
       headers: auth(),
     });
   },
+  getProductPost(query) {
+    return request({
+      url: "/product/list_category",
+      method: "get",
+      headers: auth(),
+      params: query,
+    });
+  },
 };
